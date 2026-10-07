@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Scaralyze — Scar Texture Progress Tracker</title>
 <meta name="description" content="Scaralyze: interactive before/after scar texture tracking for clinicians and patients.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=Cairo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,46 +16,125 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <svg class="brand-mark" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="15" cy="15" r="13" stroke="currentColor" stroke-width="2"/>
-        <path d="M15 4 L15 26 M4 15 L26 15" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-        <circle cx="15" cy="15" r="4" fill="currentColor"/>
-      </svg>
+      <span class="brand-tile">
+        <svg width="22" height="22" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+          <circle cx="15" cy="15" r="12" stroke="currentColor" stroke-width="2.2"/>
+          <path d="M15 3v6M15 21v6M3 15h6M21 15h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="15" cy="15" r="3.5" fill="currentColor"/>
+        </svg>
+      </span>
       <span class="brand-name">Scaralyze</span>
     </div>
-    <nav class="mode-switch" id="modeSwitch" hidden>
-      <button class="mode-btn active" data-mode="clinician" id="btnModeClinician">Clinician view</button>
-      <button class="mode-btn" data-mode="patient" id="btnModePatient">My progress</button>
-      <button class="mode-btn ghost" id="btnStartOver">Start over</button>
-    </nav>
+
+    <div class="topbar-actions">
+      <nav class="seg" id="modeSwitch" hidden>
+        <button class="active" data-mode="clinician" id="btnModeClinician" aria-pressed="true">
+          <svg class="ico" viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+          <span data-i18n="navClinician">Clinician view</span>
+        </button>
+        <button data-mode="patient" id="btnModePatient" aria-pressed="false">
+          <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          <span data-i18n="navPatient">My progress</span>
+        </button>
+      </nav>
+
+      <button class="btn-reset" id="btnStartOver" hidden>
+        <svg class="ico" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
+        <span data-i18n="navStartOver">Start over</span>
+      </button>
+
+      <!-- Language switch -->
+      <div class="seg lang" id="langSwitch" role="group" aria-label="Language / اللغة">
+        <button class="active" id="langEn" data-lang="en" aria-pressed="true" aria-label="English">
+          <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>
+          <span>EN</span>
+        </button>
+        <button id="langAr" data-lang="ar" aria-pressed="false" aria-label="العربية">
+          <span>عربي</span>
+        </button>
+      </div>
+    </div>
   </div>
 </header>
 
 <!-- ============ HERO / ROLE PICK ============ -->
 <main>
 <section id="hero" class="hero">
-  <div class="hero-grain" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
   <div class="hero-inner">
-    <p class="eyebrow">σ · edge-density · Δ texture</p>
-    <h1>Measure the healing,<br>not just the eye test.</h1>
-    <p class="hero-sub">Scaralyze reads two photos of the same skin — before and after — and turns the difference in surface texture into numbers, maps, and a plain-language report. Pick how you're using it today.</p>
 
-    <div class="role-cards">
-      <button class="role-card" id="pickClinician">
-        <span class="role-tag">01</span>
-        <span class="role-title">I'm a clinician</span>
-        <span class="role-desc">Full dashboard — manual or automatic region picking, texture maps, difference thresholds, exportable metrics table.</span>
-        <span class="role-cta">Open clinician view →</span>
-      </button>
-      <button class="role-card" id="pickPatient">
-        <span class="role-tag">02</span>
-        <span class="role-title">I'm tracking my own scar</span>
-        <span class="role-desc">Simple before/after slider, one auto-picked region, and a one-line summary you can save or share with your provider.</span>
-        <span class="role-cta">Open my progress →</span>
-      </button>
+    <div class="hero-copy">
+      <span class="badge">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>
+        <span data-i18n="heroBadge">Private by design · runs in your browser</span>
+      </span>
+      <h1 data-i18n="heroTitle">Measure the healing, not just the eye test.</h1>
+      <p class="hero-sub" data-i18n="heroSub">Scaralyze compares two photos of the same skin — before and after — and turns the change in surface texture into numbers, maps and a plain-language report. Choose how you want to use it.</p>
+
+      <div class="role-cards">
+        <button class="role-card clinician" id="pickClinician">
+          <span class="role-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></span>
+          <span class="role-text">
+            <span class="role-title" data-i18n="roleClinTitle">I'm a clinician</span>
+            <span class="role-desc" data-i18n="roleClinDesc">Full dashboard: region picking, texture maps, difference threshold, metrics table and PDF report.</span>
+          </span>
+          <span class="role-go"><span class="arr"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></span>
+        </button>
+        <button class="role-card patient" id="pickPatient">
+          <span class="role-icon"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+          <span class="role-text">
+            <span class="role-title" data-i18n="rolePatTitle">I'm tracking my own scar</span>
+            <span class="role-desc" data-i18n="rolePatDesc">A simple before/after slider, one auto-picked region and a short summary you can save or share with your provider.</span>
+          </span>
+          <span class="role-go"><span class="arr"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></span>
+        </button>
+      </div>
+
+      <p class="hero-disclaimer" data-i18n="heroDisclaimer">Your photos never leave your device. This is a texture-tracking tool, not a diagnostic device, and it does not replace clinical judgment.</p>
     </div>
 
-    <p class="hero-disclaimer">Runs entirely in your browser — no photos ever leave your device. This is a texture-tracking tool, not a diagnostic device; it does not replace clinical judgment.</p>
+    <!-- Decorative before/after scan illustration -->
+    <div class="scan" aria-hidden="true">
+      <svg viewBox="0 0 400 340" class="scan-svg">
+        <defs>
+          <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#E6BA9E"/><stop offset="1" stop-color="#CC9677"/>
+          </linearGradient>
+          <filter id="grainA" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7"/>
+            <feColorMatrix values="0 0 0 0 .30  0 0 0 0 .17  0 0 0 0 .12  0 0 0 1.7 -.62"/>
+          </filter>
+          <filter id="grainB" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.4" numOctaves="2" seed="3"/>
+            <feColorMatrix values="0 0 0 0 .30  0 0 0 0 .17  0 0 0 0 .12  0 0 0 1.2 -.5"/>
+          </filter>
+          <clipPath id="clipL"><rect x="0" y="0" width="200" height="340"/></clipPath>
+          <clipPath id="clipR"><rect x="200" y="0" width="200" height="340"/></clipPath>
+          <path id="scar" d="M40 250 C110 175 175 225 238 160 S335 118 372 92" fill="none" stroke-linecap="round"/>
+        </defs>
+        <rect width="400" height="340" fill="url(#skin)"/>
+        <rect width="200" height="340" filter="url(#grainA)" opacity=".8"/>
+        <rect x="200" width="200" height="340" filter="url(#grainB)" opacity=".55"/>
+        <use href="#scar" stroke="#B8695E" stroke-opacity=".55" stroke-width="15" clip-path="url(#clipL)"/>
+        <use href="#scar" stroke="#C9807A" stroke-width="9" clip-path="url(#clipL)"/>
+        <use href="#scar" stroke="#fff" stroke-opacity=".4" stroke-width="2.4" stroke-dasharray="1 10" clip-path="url(#clipL)"/>
+        <use href="#scar" stroke="#D9A59A" stroke-opacity=".7" stroke-width="6" clip-path="url(#clipR)"/>
+        <line x1="200" y1="0" x2="200" y2="340" stroke="#fff" stroke-width="2.5"/>
+        <g class="scan-handle">
+          <circle cx="200" cy="170" r="19" fill="#fff"/>
+          <path d="M193 164l-6 6 6 6M207 164l6 6-6 6" fill="none" stroke="#0B1F2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g class="scan-caliper">
+          <rect x="82" y="150" width="104" height="104" rx="2" fill="rgba(14,168,147,.12)" stroke="#12C9AC" stroke-width="2.2" stroke-dasharray="7 5"/>
+          <path d="M82 174V150h24M186 174V150h-24M82 230v24h24M186 230v24h-24" fill="none" stroke="#12C9AC" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="134" cy="202" r="3.5" fill="#12C9AC"/>
+        </g>
+      </svg>
+      <span class="scan-tag left" data-i18n="slotPreLabel">Pre</span>
+      <span class="scan-tag right" data-i18n="slotPostLabel">Post</span>
+      <span class="scan-readout">x 134 · y 202 · σ 19.6</span>
+    </div>
+
   </div>
 </section>
 
@@ -64,29 +144,31 @@
   <!-- Patient info -->
   <div class="panel patient-info">
     <div class="panel-head">
-      <span class="panel-num">§1</span>
-      <h2>Case details</h2>
+      <span class="step">1</span>
+      <div>
+        <h2 data-i18n="caseTitle">Case details</h2>
+      </div>
     </div>
     <div class="field-row">
       <label>
-        <span>Patient name</span>
-        <input type="text" id="patientName" placeholder="e.g. Ahmed Basyony">
+        <span data-i18n="fName">Patient name</span>
+        <input type="text" id="patientName" data-i18n-ph="phName" placeholder="e.g. Ahmed Basyony">
       </label>
       <label class="clinician-only">
-        <span>Case / record ID</span>
-        <input type="text" id="patientId" placeholder="optional">
+        <span data-i18n="fId">Case / record ID</span>
+        <input type="text" id="patientId" data-i18n-ph="phOptional" placeholder="optional">
       </label>
       <label>
-        <span>Pre-treatment date</span>
+        <span data-i18n="fDatePre">Pre-treatment date</span>
         <input type="date" id="datePre">
       </label>
       <label>
-        <span>Post-treatment date</span>
+        <span data-i18n="fDatePost">Post-treatment date</span>
         <input type="date" id="datePost">
       </label>
       <label class="clinician-only">
-        <span>Clinician notes</span>
-        <input type="text" id="clinicianNotes" placeholder="optional, appears on report">
+        <span data-i18n="fNotes">Clinician notes</span>
+        <input type="text" id="clinicianNotes" data-i18n-ph="phNotes" placeholder="optional, appears on report">
       </label>
     </div>
   </div>
@@ -94,185 +176,158 @@
   <!-- Uploads + region selection -->
   <div class="panel">
     <div class="panel-head">
-      <span class="panel-num">§2</span>
-      <h2>Pick the scar region</h2>
-      <p class="panel-hint">Click anywhere on either photo to drop a caliper on the scar — same click works for auto too, it just gives you a starting point. Drag the size ring to grow or shrink the sampled window.</p>
+      <span class="step">2</span>
+      <div>
+        <h2 data-i18n="regionTitle">Pick the scar region</h2>
+        <p class="panel-hint" data-i18n="regionHint">Upload both photos, then drag the box onto the scar with your mouse (or click anywhere to jump it there). Drag a corner to resize it, or use the slider below.</p>
+      </div>
     </div>
 
     <div class="upload-analyze-grid">
       <div class="image-slot" id="slotPre">
-        <div class="slot-label">Pre <span class="slot-sub">before</span></div>
+        <div class="slot-label"><span class="dot pre"></span><span data-i18n="slotPreLabel">Pre</span> <span class="slot-sub" data-i18n="slotPreSub">before</span></div>
         <div class="canvas-wrap" id="wrapPre">
           <input type="file" accept="image/*" id="fileInputPre" class="file-input">
           <div class="drop-empty" id="dropEmptyPre">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 4v11m0-11 4 4m-4-4-4 4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>Upload or capture pre photo</span>
+            <span class="drop-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M12 16V4m0 0 4 4m-4-4-4 4M5 16v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>
+            <strong data-i18n="dropPre">Upload or capture the pre photo</strong>
+            <span data-i18n="dropSub">Tap to choose, or drop an image here</span>
           </div>
           <canvas id="canvasPre"></canvas>
           <div class="readout" id="readoutPre">x — · y — · σ —</div>
         </div>
         <div class="slot-controls">
-          <button class="btn-mini" id="autoPre">Auto-detect region</button>
-          <button class="btn-mini" id="camPre">Take live photo</button>
-          <button class="btn-mini ghost" id="replacePre">Replace photo</button>
+          <button class="btn-mini auto" id="autoPre">
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+            <span data-i18n="btnAuto">Auto-detect region</span>
+          </button>
+          <button class="btn-mini cam" id="camPre">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h1.5l1-1.5h7l1 1.5H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+            <span data-i18n="btnCam">Take live photo</span>
+          </button>
+          <button class="btn-mini ghost" id="replacePre">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4M4 4v4h4M4 13a8 8 0 0 0 14.5 4M20 20v-4h-4"/></svg>
+            <span data-i18n="btnReplace">Replace photo</span>
+          </button>
         </div>
       </div>
 
       <div class="image-slot" id="slotPost">
-        <div class="slot-label">Post <span class="slot-sub">after</span></div>
+        <div class="slot-label"><span class="dot post"></span><span data-i18n="slotPostLabel">Post</span> <span class="slot-sub" data-i18n="slotPostSub">after</span></div>
         <div class="canvas-wrap" id="wrapPost">
           <input type="file" accept="image/*" id="fileInputPost" class="file-input">
           <div class="drop-empty" id="dropEmptyPost">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 4v11m0-11 4 4m-4-4-4 4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>Upload or capture post photo</span>
+            <span class="drop-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M12 16V4m0 0 4 4m-4-4-4 4M5 16v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>
+            <strong data-i18n="dropPost">Upload or capture the post photo</strong>
+            <span data-i18n="dropSub">Tap to choose, or drop an image here</span>
           </div>
           <canvas id="canvasPost"></canvas>
           <div class="readout" id="readoutPost">x — · y — · σ —</div>
         </div>
         <div class="slot-controls">
-          <button class="btn-mini" id="autoPost">Auto-detect region</button>
-          <button class="btn-mini" id="camPost">Take live photo</button>
-          <button class="btn-mini ghost" id="replacePost">Replace photo</button>
+          <button class="btn-mini auto" id="autoPost">
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+            <span data-i18n="btnAuto">Auto-detect region</span>
+          </button>
+          <button class="btn-mini cam" id="camPost">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h1.5l1-1.5h7l1 1.5H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+            <span data-i18n="btnCam">Take live photo</span>
+          </button>
+          <button class="btn-mini ghost" id="replacePost">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4M4 4v4h4M4 13a8 8 0 0 0 14.5 4M20 20v-4h-4"/></svg>
+            <span data-i18n="btnReplace">Replace photo</span>
+          </button>
         </div>
       </div>
     </div>
 
     <div class="sample-controls">
       <label class="slider-field">
-        <span>Sample window <b id="windowSizeLabel">60px</b></span>
+        <span><span data-i18n="sampleWindow">Sample window</span> <b id="windowSizeLabel">60px</b></span>
         <input type="range" id="windowSize" min="20" max="140" step="4" value="60">
       </label>
-      <label class="slider-field clinician-only">
-        <span>Difference threshold <b id="threshLabel">160</b></span>
+      <label class="slider-field ">
+        <span><span data-i18n="diffThreshold">Difference threshold</span> <b id="threshLabel">160</b></span>
         <input type="range" id="threshold" min="0" max="255" step="1" value="160">
       </label>
-      <button class="btn-primary" id="analyzeBtn" disabled>Run analysis →</button>
+      <div class="analyze-wrap">
+        <span class="analyze-hint" id="analyzeHint" data-i18n="analyzeHint">Upload both photos to enable analysis</span>
+        <button class="btn-primary large" id="analyzeBtn" disabled>
+          <span data-i18n="btnAnalyze">Run analysis</span>
+          <span class="arr"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Results -->
   <div class="panel results-panel" id="resultsPanel" hidden>
     <div class="panel-head">
-      <span class="panel-num">§3</span>
-      <h2>Results</h2>
+      <span class="step">3</span>
+      <div><h2 data-i18n="resultsTitle">Results</h2></div>
     </div>
 
     <div class="compare-slider-wrap">
       <div class="compare-slider" id="compareSlider">
         <img id="compareImgPre" alt="Pre-treatment full photo">
         <div class="compare-clip" id="compareClip"><img id="compareImgPost" alt="Post-treatment full photo"></div>
-        <input type="range" id="compareRange" min="0" max="100" value="50">
+        <input type="range" id="compareRange" min="0" max="100" value="50" aria-label="Compare">
         <div class="compare-handle" id="compareHandle"></div>
+        <span class="cmp-tag left" data-i18n="slotPreLabel">Pre</span>
+        <span class="cmp-tag right" data-i18n="slotPostLabel">Post</span>
       </div>
-      <p class="compare-caption">Drag to compare full photos — the caliper boxes mark the sampled region.</p>
+      <p class="compare-caption" data-i18n="compareCaption">Drag the handle to compare the two full photos.</p>
     </div>
 
     <div class="result-grid" id="resultGrid"></div>
 
     <div class="metrics-block">
-      <h3>Texture volume table</h3>
-      <table class="metrics-table" id="metricsTable"></table>
+      <h3 data-i18n="tableTitle">Texture volume table</h3>
+      <div class="table-scroll"><table class="metrics-table" id="metricsTable"></table></div>
     </div>
 
     <div class="summary-block" id="summaryBlock">
-      <span class="summary-eyebrow">Auto-generated summary</span>
-      <p id="summaryText"></p>
+      <span class="summary-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg></span>
+      <div>
+        <span class="summary-eyebrow" data-i18n="summaryLabel">Auto-generated summary</span>
+        <p id="summaryText"></p>
+      </div>
     </div>
 
     <div class="report-actions">
-      <button class="btn-primary large" id="exportPdfBtn">Download PDF report</button>
-      <span class="report-hint">Includes patient details, both photos, texture maps, the table above, and this summary.</span>
+      <button class="btn-primary large" id="exportPdfBtn">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14"/></svg>
+        <span data-i18n="btnPdf">Download PDF report</span>
+      </button>
+      <span class="report-hint" data-i18n="pdfHint">Includes patient details, both photos, texture maps, the table above and this summary.</span>
     </div>
   </div>
 
 </section>
 </main>
 
-<!-- Camera Modal Overlay for Live Capture -->
-<div id="camModal" style="display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; padding:20px;">
-  <div style="background:var(--surface, #FFF); border-radius:16px; padding:24px; max-width:500px; width:100%; display:flex; flex-direction:column; gap:16px; text-align:center;">
-    <h3 style="font-family:var(--font-display, sans-serif); margin:0;">Live Skin Capture</h3>
-    <div style="position:relative; width:100%; aspect-ratio:4/3; background:#000; border-radius:12px; overflow:hidden;">
-      <video id="camVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
-    </div>
-    <div style="display:flex; gap:12px; justify-content:center;">
-      <button class="btn-primary" id="camCaptureBtn" style="margin:0;">Capture photo</button>
-      <button class="btn-mini ghost" id="camCloseBtn">Cancel</button>
+<!-- Camera modal for live capture -->
+<div class="modal" id="camModal" role="dialog" aria-modal="true" aria-labelledby="camTitle">
+  <div class="modal-card">
+    <h3 id="camTitle" data-i18n="camTitle">Live skin capture</h3>
+    <div class="cam-view"><video id="camVideo" autoplay playsinline muted></video></div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="camCaptureBtn">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h1.5l1-1.5h7l1 1.5H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+        <span data-i18n="camCapture">Capture photo</span>
+      </button>
+      <button class="btn-mini ghost" id="camCloseBtn" data-i18n="camCancel">Cancel</button>
     </div>
   </div>
 </div>
 
 <footer class="site-footer">
-  <p><strong>Scaralyze</strong> is a texture-tracking aid built for visualizing change between two photos of the same skin area. It is not a diagnostic device, is not validated against histological collagen measurement, and does not replace evaluation by a qualified clinician. All processing happens locally in your browser.</p>
+  <p data-i18n-html="footer"><strong>Scaralyze</strong> is a texture-tracking aid built for visualizing change between two photos of the same skin area. It is not a diagnostic device, is not validated against histological collagen measurement, and does not replace evaluation by a qualified clinician. All processing happens locally in your browser.</p>
 </footer>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="app.js"></script>
-<script>
-// --- Live Camera Capture Logic ---
-let activeCameraSlot = null;
-const camModal = document.getElementById('camModal');
-const camVideo = document.getElementById('camVideo');
-const camCaptureBtn = document.getElementById('camCaptureBtn');
-const camCloseBtn = document.getElementById('camCloseBtn');
-let mediaStream = null;
-
-function openCamera(slotId) {
-  activeCameraSlot = slotId;
-  camModal.style.display = 'flex';
-  
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
-    .then(stream => {
-      mediaStream = stream;
-      camVideo.srcObject = stream;
-    })
-    .catch(err => {
-      console.error("Camera access error:", err);
-      alert("Unable to access camera. Please check permissions.");
-      closeCamera();
-    });
-}
-
-function closeCamera() {
-  if (mediaStream) {
-    mediaStream.getTracks().forEach(track => track.stop());
-    mediaStream = null;
-  }
-  camVideo.srcObject = null;
-  camModal.style.display = 'none';
-  activeCameraSlot = null;
-}
-
-document.getElementById('camPre').addEventListener('click', () => openCamera('Pre'));
-document.getElementById('camPost').addEventListener('click', () => openCamera('Post'));
-camCloseBtn.addEventListener('click', closeCamera);
-
-camCaptureBtn.addEventListener('click', () => {
-  if (!activeCameraSlot) return;
-  
-  const canvas = document.createElement('canvas');
-  canvas.width = camVideo.videoWidth || 640;
-  canvas.height = camVideo.videoHeight || 480;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(camVideo, 0, 0, canvas.width, canvas.height);
-  
-  canvas.toBlob(blob => {
-    const file = new File([blob], `live-capture-${activeCameraSlot.toLowerCase()}.jpg`, { type: 'image/jpeg' });
-    
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-    const fileInput = document.getElementById(`fileInput${activeCameraSlot}`);
-    fileInput.files = dataTransfer.files;
-    
-    const event = new Event('change', { bubbles: true });
-    fileInput.dispatchEvent(event);
-    
-    closeCamera();
-  }, 'image/jpeg', 0.95);
-});
-</script>
 </body>
 </html>
